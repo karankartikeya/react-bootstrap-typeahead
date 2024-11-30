@@ -57,6 +57,7 @@ const {
   InputValidation,
   Pagination,
   AllowNew,
+  DisabledItem,
   CustomMenu,
   Controlled,
 } = composeStories(stories);
@@ -404,6 +405,11 @@ describe('<Typeahead>', () => {
     expect(getInput()).toHaveClass('form-control-sm');
   });
 
+  it('does not render a loading indicator by default', () => {
+    render(<Default />);
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
+
   it('renders a loading indicator', () => {
     render(<Default isLoading />);
     expect(screen.queryByRole('status')).toBeInTheDocument();
@@ -730,6 +736,22 @@ describe('<Typeahead>', () => {
       expect(input).toHaveFocus();
       expect(getMenu()).not.toBeInTheDocument();
       expect(hint).toHaveValue('');
+    });
+
+    it('only displays a hint for non-disabled items', async () => {
+      const user = userEvent.setup();
+      const { container } = render(<DisabledItem />);
+      const input = getInput();
+      const hint = getHint(container);
+
+      await user.type(input, 'Ala');
+
+      // The hint should not display if the initial item is disabled.
+      expect(hint).toHaveValue('');
+
+      await user.clear(input);
+      await user.type(input, 'Ari');
+      expect(hint).toHaveValue('Arizona');
     });
   });
 

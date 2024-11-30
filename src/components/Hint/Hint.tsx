@@ -39,7 +39,22 @@ function copyStyles(inputNode: HTMLInputElement, hintNode: HTMLInputElement) {
 
 export const useHint = () => {
   const { hintText, inputNode } = useTypeaheadContext();
+
   const hintRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    // Scroll hint input when the text input is scrolling.
+    const handleInputScroll = () => {
+      if (hintRef.current && inputNode) {
+        hintRef.current.scrollLeft = inputNode.scrollLeft;
+      }
+    };
+
+    inputNode?.addEventListener('scroll', handleInputScroll);
+    return () => {
+      inputNode?.removeEventListener('scroll', handleInputScroll);
+    };
+  }, [inputNode]);
 
   useEffect(() => {
     if (inputNode && hintRef.current) {

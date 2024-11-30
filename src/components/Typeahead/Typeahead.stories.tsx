@@ -40,7 +40,7 @@ const defaultProps = {
   clearButton: false,
   flip: true,
   id: 'rbt-id',
-  isLoading: false,
+  isLoading: undefined,
   labelKey: 'name',
   multiple: false,
   onBlur: noop,
@@ -93,6 +93,16 @@ export const AllowNew = Template.bind({});
 AllowNew.args = {
   ...defaultProps,
   allowNew: true,
+};
+
+export const DisabledItem = Template.bind({});
+DisabledItem.args = {
+  ...defaultProps,
+  options: options.map((option) =>
+    option.name === 'Alabama'
+      ? { ...option, disabled: true }
+      : { ...option, disabled: false }
+  ),
 };
 
 export const CustomInput = Template.bind({});
